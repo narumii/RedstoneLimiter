@@ -1,0 +1,3 @@
+# This option allows you to limit Redstone state change per second per chunk
+# Fuck yooniks and limiting block per chunk xdd
+max-redstone-changes: 600
