@@ -15,9 +15,7 @@ But both methods are shit. First because of memory leaks, second will rape your 
 ---
 
 ### TODO
-- Blocking redstone when tps reach X / Blokowanie tps gdy tps osiagna wartosc X
 - Cooldowns (but thas useless) / Mozliwosc interakcji z danym syfem co x czasu (Tylko nie wiem po co to)
-- Option to disable redstone completely / Mozliwosc calkowitego wylaczenia redstone
 
 ---
 
