@@ -1,3 +1,12 @@
 # This option allows you to limit Redstone state change per second per chunk
 # Fuck yooniks and limiting block per chunk xdd
 max-redstone-changes: 600
+
+#When tps reach given value it will automatically disable redstone if you selected auto disable option
+disable-tps-trigger: 16
+
+#Allows you to disable redsotone
+disable-redstone: false
+
+#When tps reach given value it will automatically disable redstone
+auto-disable-redstone: true
