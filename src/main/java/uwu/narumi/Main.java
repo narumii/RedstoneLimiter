@@ -1,40 +1,45 @@
 package uwu.narumi;
 
 import java.lang.reflect.Field;
+import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
-import uwu.narumi.command.MaxChangesCommand;
+import uwu.narumi.command.RedstoneCommand;
+import uwu.narumi.config.Config;
 import uwu.narumi.listener.RedstoneListener;
+import uwu.narumi.task.RedstoneDisableTask;
 
 public class Main extends JavaPlugin {
 
   private static Main instance;
 
   private SimpleCommandMap commandMap;
-  private int maxChanges;
+  private Config config;
 
   @Override
   public void onEnable() {
     getLogger().info("Fuck yooniks skid lol");
     instance = this;
 
+    saveDefaultConfig();
+    config = new Config(getConfig());
+    config.load();
+
     if (commandMap == null) {
       trySetCommandMap();
-      commandMap.register("redstonelimiter", new MaxChangesCommand());
+      commandMap.register("redstonelimiter", new RedstoneCommand());
     }
 
-    saveDefaultConfig();
-    maxChanges = getConfig().getInt("max-redstone-changes", 600);
-
     getServer().getPluginManager().registerEvents(new RedstoneListener(), this);
+
+    if (config.autoDisable) //We can run this in async
+      Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RedstoneDisableTask(), 20,20);
   }
 
   @Override
   public void onDisable() {
     getLogger().info("Fuck yooniks skid lol");
-
-    getConfig().set("max-redstone-changes", maxChanges);
-    saveConfig();
+    config.save();
   }
 
   private void trySetCommandMap() {
@@ -48,12 +53,8 @@ public class Main extends JavaPlugin {
     }
   }
 
-  public int getMaxChanges() {
-    return maxChanges;
-  }
-
-  public void setMaxChanges(int maxChanges) {
-    this.maxChanges = maxChanges;
+  public Config getCustomConfig() {
+    return config;
   }
 
   public static Main getInstance() {
