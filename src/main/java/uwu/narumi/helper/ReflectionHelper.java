@@ -3,7 +3,6 @@ package uwu.narumi.helper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 public final class ReflectionHelper {
 

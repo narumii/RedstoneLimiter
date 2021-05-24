@@ -6,6 +6,7 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import uwu.narumi.command.RedstoneCommand;
 import uwu.narumi.config.Config;
+import uwu.narumi.config.ConfigManager;
 import uwu.narumi.listener.RedstoneListener;
 import uwu.narumi.task.RedstoneDisableTask;
 
@@ -14,16 +15,20 @@ public class Main extends JavaPlugin {
   private static Main instance;
 
   private SimpleCommandMap commandMap;
+  private ConfigManager configManager;
   private Config config;
+
+  public static Main getInstance() {
+    return instance;
+  }
 
   @Override
   public void onEnable() {
     getLogger().info("Fuck yooniks skid lol");
     instance = this;
 
-    saveDefaultConfig();
-    config = new Config(getConfig());
-    config.load();
+    configManager = new ConfigManager(getDataFolder());
+    config = configManager.loadConfig();
 
     if (commandMap == null) {
       trySetCommandMap();
@@ -32,14 +37,16 @@ public class Main extends JavaPlugin {
 
     getServer().getPluginManager().registerEvents(new RedstoneListener(), this);
 
-    if (config.autoDisable) //We can run this in async
-      Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RedstoneDisableTask(), 20,20);
+    if (config.AUTO.enabled) //We can run this in async
+    {
+      Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RedstoneDisableTask(), 20, 20);
+    }
   }
 
   @Override
   public void onDisable() {
     getLogger().info("Fuck yooniks skid lol");
-    config.save();
+    configManager.saveConfig(config);
   }
 
   private void trySetCommandMap() {
@@ -55,9 +62,5 @@ public class Main extends JavaPlugin {
 
   public Config getCustomConfig() {
     return config;
-  }
-
-  public static Main getInstance() {
-    return instance;
   }
 }

@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import uwu.narumi.Main;
 import uwu.narumi.config.Config;
+import uwu.narumi.helper.ChatHelper;
 
 public class RedstoneCommand extends Command {
 
@@ -23,7 +24,7 @@ public class RedstoneCommand extends Command {
     super(
         "redstone",
         "Command for change redstonelimiter settings",
-        " §8» §7Usage: §c/redstone <limit/tps/state/auto> <value>",
+        ChatHelper.fixColors(Main.getInstance().getCustomConfig().MESSAGES.get("CommandUsage")),
         Collections.singletonList("redstonelimiter")
     );
   }
@@ -36,37 +37,40 @@ public class RedstoneCommand extends Command {
     }
 
     String command = args[0].toLowerCase(Locale.ROOT);
-    if ((command.equals("limit") || command.equals("tps")) && !numberPattern.matcher(args[1]).matches()) {
-      sender.sendMessage(" §8» §7Usage: §c/redstone <limit/tps> <number>");
+    if ((command.equals("maxchanges") || command.equals("tps")) && !numberPattern.matcher(args[1])
+        .matches()) {
+      sender.sendMessage(ChatHelper.fixColors(config.MESSAGES.get("NumberCommandUsage")));
       return false;
     }
 
+    String message = ChatHelper.fixColors(config.MESSAGES.get(command));
     switch (command) {
-      case "limit": {
+      case "maxchanges": {
         int amount = Integer.parseInt(args[1]);
-        config.limit = amount;
-        sender.sendMessage(" §8» §7Max redstone changes per second per chunk was set to: §c" + amount);
+        config.LIMITER.maxChanges = amount;
+        sender.sendMessage(message.replace("{amount}", args[1]));
         break;
       }
       case "tps": {
         int amount = Integer.parseInt(args[1]);
-        config.limit = amount;
-        sender.sendMessage(" §8» §7Auto disable min tps was set to: §c" + amount);
+        config.AUTO.tpsTrigger = amount;
+        sender.sendMessage(message.replace("{amount}", args[1]));
         break;
       }
       case "state": {
         boolean state = Boolean.parseBoolean(args[1]);
         config.disableRedstone = !state;
-        Bukkit.broadcastMessage(" §8» §c" + (state ? "Enabled" : "Disabled") + " §7redstone");
+        Bukkit.broadcastMessage(message.replace("{state}", (state ? "Enabled" : "Disabled")));
         break;
       }
       case "auto": {
         boolean state = Boolean.parseBoolean(args[1]);
-        config.autoDisable = state;
-        sender.sendMessage(" §8» §c" + (state ? "Enabled" : "Disabled") + " §7auto redstone disabler");
+        config.AUTO.enabled = state;
+        sender.sendMessage(message.replace("{state}", (state ? "Enabled" : "Disabled")));
         break;
       }
-      default: sender.sendMessage(getUsage());
+      default:
+        sender.sendMessage(ChatHelper.fixColors(config.MESSAGES.get("CommandUsage")));
     }
 
     return true;
