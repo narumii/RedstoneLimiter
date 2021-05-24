@@ -27,6 +27,9 @@ public class Main extends JavaPlugin {
     getLogger().info("Fuck yooniks skid lol");
     instance = this;
 
+    if (!getDataFolder().exists())
+      getDataFolder().mkdirs();
+
     configManager = new ConfigManager(getDataFolder());
     config = configManager.loadConfig();
 
